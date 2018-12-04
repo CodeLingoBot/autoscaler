@@ -382,6 +382,7 @@ func simpleScaleUpTest(t *testing.T, config *scaleTestConfig) {
 		pod := buildTestPod(p)
 		pods = append(pods, pod)
 	}
+
 	podLister := kube_util.NewTestPodLister(pods)
 	listers := kube_util.NewListerRegistry(nil, nil, podLister, nil, nil, nil, nil, nil, nil, nil)
 
@@ -480,8 +481,23 @@ func TestScaleUpNodeComingNoScale(t *testing.T) {
 	p1.Spec.NodeName = "n1"
 	p2.Spec.NodeName = "n2"
 
+<<<<<<< HEAD
 	podLister := kube_util.NewTestPodLister([]*apiv1.Pod{p1, p2})
 	listers := kube_util.NewListerRegistry(nil, nil, podLister, nil, nil, nil, nil, nil, nil, nil)
+=======
+	fakeClient := &fake.Clientset{}
+	fakeClient.Fake.AddReactor("list", "pods", func(action core.Action) (bool, runtime.Object, error) {
+		list := action.(core.ListAction)
+		fieldstring := list.GetListRestrictions().Fields.String()
+		if strings.Contains(fieldstring, "n1") {
+			return true, &apiv1.PodList{Items: []apiv1.Pod{*p1}}, nil
+		}
+		if strings.Contains(fieldstring, "n2") {
+			return true, &apiv1.PodList{Items: []apiv1.Pod{*p2}}, nil
+		}
+		return true, nil, fmt.Errorf("failed to list: %v", list)
+	})
+>>>>>>> 615b2c3b... # This is a combination of 3 commits.
 
 	provider := testprovider.NewTestCloudProvider(func(nodeGroup string, increase int) error {
 		t.Fatalf("No expansion is expected, but increased %s by %d", nodeGroup, increase)
@@ -528,8 +544,23 @@ func TestScaleUpNodeComingHasScale(t *testing.T) {
 	p1.Spec.NodeName = "n1"
 	p2.Spec.NodeName = "n2"
 
+<<<<<<< HEAD
 	podLister := kube_util.NewTestPodLister([]*apiv1.Pod{p1, p2})
 	listers := kube_util.NewListerRegistry(nil, nil, podLister, nil, nil, nil, nil, nil, nil, nil)
+=======
+	fakeClient := &fake.Clientset{}
+	fakeClient.Fake.AddReactor("list", "pods", func(action core.Action) (bool, runtime.Object, error) {
+		list := action.(core.ListAction)
+		fieldstring := list.GetListRestrictions().Fields.String()
+		if strings.Contains(fieldstring, "n1") {
+			return true, &apiv1.PodList{Items: []apiv1.Pod{*p1}}, nil
+		}
+		if strings.Contains(fieldstring, "n2") {
+			return true, &apiv1.PodList{Items: []apiv1.Pod{*p2}}, nil
+		}
+		return true, nil, fmt.Errorf("failed to list: %v", list)
+	})
+>>>>>>> 615b2c3b... # This is a combination of 3 commits.
 
 	expandedGroups := make(chan string, 10)
 	provider := testprovider.NewTestCloudProvider(func(nodeGroup string, increase int) error {
@@ -576,8 +607,23 @@ func TestScaleUpUnhealthy(t *testing.T) {
 	p1.Spec.NodeName = "n1"
 	p2.Spec.NodeName = "n2"
 
+<<<<<<< HEAD
 	podLister := kube_util.NewTestPodLister([]*apiv1.Pod{p1, p2})
 	listers := kube_util.NewListerRegistry(nil, nil, podLister, nil, nil, nil, nil, nil, nil, nil)
+=======
+	fakeClient := &fake.Clientset{}
+	fakeClient.Fake.AddReactor("list", "pods", func(action core.Action) (bool, runtime.Object, error) {
+		list := action.(core.ListAction)
+		fieldstring := list.GetListRestrictions().Fields.String()
+		if strings.Contains(fieldstring, "n1") {
+			return true, &apiv1.PodList{Items: []apiv1.Pod{*p1}}, nil
+		}
+		if strings.Contains(fieldstring, "n2") {
+			return true, &apiv1.PodList{Items: []apiv1.Pod{*p2}}, nil
+		}
+		return true, nil, fmt.Errorf("failed to list: %v", list)
+	})
+>>>>>>> 615b2c3b... # This is a combination of 3 commits.
 
 	provider := testprovider.NewTestCloudProvider(func(nodeGroup string, increase int) error {
 		t.Fatalf("No expansion is expected, but increased %s by %d", nodeGroup, increase)
@@ -614,8 +660,19 @@ func TestScaleUpNoHelp(t *testing.T) {
 	p1 := BuildTestPod("p1", 80, 0)
 	p1.Spec.NodeName = "n1"
 
+<<<<<<< HEAD
 	podLister := kube_util.NewTestPodLister([]*apiv1.Pod{p1})
 	listers := kube_util.NewListerRegistry(nil, nil, podLister, nil, nil, nil, nil, nil, nil, nil)
+=======
+	fakeClient.Fake.AddReactor("list", "pods", func(action core.Action) (bool, runtime.Object, error) {
+		list := action.(core.ListAction)
+		fieldstring := list.GetListRestrictions().Fields.String()
+		if strings.Contains(fieldstring, "n1") {
+			return true, &apiv1.PodList{Items: []apiv1.Pod{*p1}}, nil
+		}
+		return true, nil, fmt.Errorf("failed to list: %v", list)
+	})
+>>>>>>> 615b2c3b... # This is a combination of 3 commits.
 
 	provider := testprovider.NewTestCloudProvider(func(nodeGroup string, increase int) error {
 		t.Fatalf("No expansion is expected")
